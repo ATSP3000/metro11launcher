@@ -6,7 +6,13 @@ import { promisify } from 'util';
 import { app, shell } from 'electron';
 import Winreg from 'winreg';
 import type { InstalledApp, AppSource } from '../src/types/app';
-import { getCachedIcon, setCachedIcon } from './store';
+import {
+  getCachedIcon,
+  setCachedIcon,
+  getCustomApps,
+  addCustomAppRecord,
+  removeCustomAppRecord
+} from './store';
 
 const execAsync = promisify(exec);
 
@@ -22,7 +28,7 @@ export function getAppById(id: string): InstalledApp | undefined {
 /** Public entry: discover every launchable app on the system. */
 export async function scan(): Promise<InstalledApp[]> {
   if (!isWindows) {
-    lastScan = mockApps();
+    lastScan = withCustomApps(mockApps());
     return lastScan;
   }
 
@@ -35,9 +41,58 @@ export async function scan(): Promise<InstalledApp[]> {
 
   const deduped = dedupe(apps);
   await attachIcons(deduped);
-  deduped.sort((a, b) => a.name.localeCompare(b.name));
-  lastScan = deduped;
-  return deduped;
+  lastScan = withCustomApps(deduped);
+  return lastScan;
+}
+
+/** Merge persisted user-added apps into a scan result and sort by name. */
+function withCustomApps(list: InstalledApp[]): InstalledApp[] {
+  const ids = new Set(list.map((a) => a.id));
+  for (const custom of getCustomApps()) {
+    if (!ids.has(custom.id)) list.push(custom);
+  }
+  list.sort((a, b) => a.name.localeCompare(b.name));
+  return list;
+}
+
+/**
+ * Create a custom app from a user-selected file, persist it, and merge it into
+ * the live scan so it can be launched immediately.
+ */
+export async function addCustomApp(filePath: string): Promise<InstalledApp> {
+  let target = filePath;
+  let cwd: string | undefined = path.dirname(filePath);
+
+  if (/\.lnk$/i.test(filePath)) {
+    try {
+      const link = shell.readShortcutLink(filePath);
+      if (link.target) {
+        target = link.target;
+        cwd = path.dirname(link.target);
+      }
+    } catch {
+      // Unreadable shortcut — fall back to launching the .lnk directly.
+    }
+  }
+
+  const name = path.basename(filePath).replace(/\.(exe|lnk|bat|cmd)$/i, '');
+  const appItem: InstalledApp = { id: slugId(target), name: name.trim(), source: 'custom', target, cwd };
+
+  const icon = await extractIcon(appItem);
+  if (icon) appItem.icon = icon;
+
+  addCustomAppRecord(appItem);
+  if (!lastScan.some((a) => a.id === appItem.id)) {
+    lastScan.push(appItem);
+    lastScan.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return appItem;
+}
+
+/** Remove a previously added custom app. */
+export function removeCustomApp(appId: string): void {
+  removeCustomAppRecord(appId);
+  lastScan = lastScan.filter((a) => a.id !== appId);
 }
 
 // ── Start Menu ────────────────────────────────────────────────────────────

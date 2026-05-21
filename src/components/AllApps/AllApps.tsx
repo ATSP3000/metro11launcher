@@ -14,6 +14,8 @@ function sectionKey(name: string): string {
 
 export function AllApps() {
   const apps = useAppsStore((s) => s.apps);
+  const addCustom = useAppsStore((s) => s.addCustom);
+  const removeCustom = useAppsStore((s) => s.removeCustom);
   const isPinned = useTilesStore((s) => s.isPinned);
   const pinApp = useTilesStore((s) => s.pinApp);
   const unpinApp = useTilesStore((s) => s.unpinApp);
@@ -49,6 +51,16 @@ export function AllApps() {
     document.getElementById(`section-${letter}`)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleAddApp = async () => {
+    const app = await addCustom();
+    if (app) pinApp(app.id);
+  };
+
+  const handleRemoveCustom = (appId: string) => {
+    unpinApp(appId);
+    void removeCustom(appId);
+  };
+
   // `tiles` referenced so pin-state buttons re-render after pin/unpin.
   void tiles;
 
@@ -59,6 +71,9 @@ export function AllApps() {
           {'←'}
         </button>
         <span className={styles.title}>All apps</span>
+        <button className={styles.addApp} onClick={() => void handleAddApp()}>
+          {'+ Add app'}
+        </button>
         <input
           className={styles.filter}
           placeholder="Filter"
@@ -83,6 +98,19 @@ export function AllApps() {
                   >
                     <img className={styles.rowIcon} src={iconForApp(app)} alt="" />
                     <span className={styles.rowName}>{app.name}</span>
+                    {app.source === 'custom' && (
+                      <span
+                        className={styles.remove}
+                        role="button"
+                        title="Remove this custom app"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveCustom(app.id);
+                        }}
+                      >
+                        Remove
+                      </span>
+                    )}
                     <span
                       className={`${styles.pin} ${pinned ? styles.pinned : ''}`}
                       role="button"

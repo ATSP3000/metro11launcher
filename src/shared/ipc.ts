@@ -26,6 +26,8 @@ export const IpcChannels = {
   rescanApps: 'rescan-apps',
   launchApp: 'launch-app',
   openAppLocation: 'open-app-location',
+  addCustomApp: 'add-custom-app',
+  removeCustomApp: 'remove-custom-app',
   loadConfig: 'load-config',
   saveConfig: 'save-config',
   getUserInfo: 'get-user-info',
@@ -43,6 +45,9 @@ export interface ElectronAPI {
   rescanApps(): Promise<InstalledApp[]>;
   launchApp(appId: string): Promise<{ ok: boolean; error?: string }>;
   openAppLocation(appId: string): Promise<{ ok: boolean; error?: string }>;
+  /** Open a file picker to add a custom app; resolves null if cancelled. */
+  addCustomApp(): Promise<InstalledApp | null>;
+  removeCustomApp(appId: string): Promise<void>;
   loadConfig(): Promise<LauncherConfig>;
   saveConfig(config: LauncherConfig): Promise<void>;
   getUserInfo(): Promise<UserInfo>;

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, screen, nativeImage } from 'electron';
+import { app, BrowserWindow, ipcMain, screen, nativeImage, dialog } from 'electron';
 import path from 'path';
 import os from 'os';
 import { promises as fs } from 'fs';
@@ -6,13 +6,17 @@ import { execFile } from 'child_process';
 import { IpcChannels } from '../src/shared/ipc';
 import type { LauncherConfig, PowerAction, UserInfo } from '../src/shared/ipc';
 import { loadConfig, saveConfig, clearIconCache } from './store';
-import { scan } from './appScanner';
+import { scan, addCustomApp, removeCustomApp } from './appScanner';
 import { launchApp, openAppLocation } from './appLauncher';
 import { registerHotkey, unregisterAll } from './hotkeyManager';
 
 const isDev = !!process.env['ELECTRON_RENDERER_URL'];
 
 let mainWindow: BrowserWindow | null = null;
+
+// Suppresses the blur-to-hide behaviour while a native dialog (e.g. the file
+// picker) is open, so choosing a file doesn't dismiss the launcher.
+let dialogOpen = false;
 
 function createWindow(): void {
   const { bounds } = screen.getPrimaryDisplay();
@@ -50,7 +54,7 @@ function createWindow(): void {
 
   // Hide instead of closing when focus is lost (acts like the Start screen).
   mainWindow.on('blur', () => {
-    if (!isDev) mainWindow?.hide();
+    if (!isDev && !dialogOpen) mainWindow?.hide();
   });
 
   if (process.env['ELECTRON_RENDERER_URL']) {
@@ -86,6 +90,31 @@ function registerIpc(): void {
   });
 
   ipcMain.handle(IpcChannels.openAppLocation, (_e, appId: string) => openAppLocation(appId));
+
+  ipcMain.handle(IpcChannels.addCustomApp, async () => {
+    dialogOpen = true;
+    try {
+      const options: Electron.OpenDialogOptions = {
+        title: 'Add an app',
+        properties: ['openFile'],
+        filters: [
+          { name: 'Programs', extensions: ['exe', 'lnk', 'bat', 'cmd'] },
+          { name: 'All files', extensions: ['*'] }
+        ]
+      };
+      const result = mainWindow
+        ? await dialog.showOpenDialog(mainWindow, options)
+        : await dialog.showOpenDialog(options);
+      if (result.canceled || result.filePaths.length === 0) return null;
+      return await addCustomApp(result.filePaths[0]);
+    } finally {
+      dialogOpen = false;
+    }
+  });
+
+  ipcMain.handle(IpcChannels.removeCustomApp, (_e, appId: string) => {
+    removeCustomApp(appId);
+  });
 
   ipcMain.handle(IpcChannels.loadConfig, () => loadConfig());
 

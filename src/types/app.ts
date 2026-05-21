@@ -1,4 +1,4 @@
-export type AppSource = 'start-menu' | 'registry' | 'uwp';
+export type AppSource = 'start-menu' | 'registry' | 'uwp' | 'custom';
 
 export interface InstalledApp {
   /** Stable identifier derived from the launch target. */

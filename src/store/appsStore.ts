@@ -24,6 +24,8 @@ interface AppsState {
   error: string | null;
   load: () => Promise<void>;
   rescan: () => Promise<void>;
+  addCustom: () => Promise<InstalledApp | null>;
+  removeCustom: (appId: string) => Promise<void>;
   getApp: (appId: string) => InstalledApp | undefined;
 }
 
@@ -62,6 +64,22 @@ export const useAppsStore = create<AppsState>((set, get) => ({
     } catch (e) {
       set({ loading: false, error: e instanceof Error ? e.message : String(e) });
     }
+  },
+
+  addCustom: async () => {
+    const app = await window.electronAPI.addCustomApp();
+    if (!app) return null;
+    set((state) => ({
+      apps: [...state.apps.filter((a) => a.id !== app.id), app].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      )
+    }));
+    return app;
+  },
+
+  removeCustom: async (appId) => {
+    await window.electronAPI.removeCustomApp(appId);
+    set((state) => ({ apps: state.apps.filter((a) => a.id !== appId) }));
   },
 
   getApp: (appId) => resolve(get().apps, appId)

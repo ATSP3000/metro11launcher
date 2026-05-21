@@ -1,6 +1,7 @@
 import Store from 'electron-store';
 import type { LauncherConfig } from '../src/shared/ipc';
 import type { Tile, TileGroup } from '../src/types/tile';
+import type { InstalledApp } from '../src/types/app';
 
 const DEFAULT_GROUPS: TileGroup[] = [
   { id: 'group-start', label: 'Start', order: 0 },
@@ -68,6 +69,30 @@ export function loadConfig(): LauncherConfig {
 
 export function saveConfig(config: LauncherConfig): void {
   configStore.set('config', { ...config, lastUpdated: Date.now() });
+}
+
+// User-added apps live in their own store so they survive a system rescan
+// (which rebuilds only the auto-discovered list).
+const customStore = new Store<{ apps: InstalledApp[] }>({
+  name: 'metro-launcher-custom',
+  defaults: { apps: [] }
+});
+
+export function getCustomApps(): InstalledApp[] {
+  return customStore.get('apps');
+}
+
+export function addCustomAppRecord(app: InstalledApp): void {
+  const apps = customStore.get('apps').filter((a) => a.id !== app.id);
+  apps.push(app);
+  customStore.set('apps', apps);
+}
+
+export function removeCustomAppRecord(appId: string): void {
+  customStore.set(
+    'apps',
+    customStore.get('apps').filter((a) => a.id !== appId)
+  );
 }
 
 export function getCachedIcon(appId: string): string | undefined {

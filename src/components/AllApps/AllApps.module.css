@@ -22,8 +22,18 @@
   font-size: 28px;
   font-weight: 300;
 }
-.filter {
+.addApp {
   margin-left: auto;
+  padding: 8px 16px;
+  font-size: 14px;
+  background: var(--metro-accent);
+  color: #fff;
+}
+.addApp:hover {
+  filter: brightness(1.1);
+}
+
+.filter {
   width: 280px;
   font-size: 16px;
   font-family: var(--metro-font);
@@ -92,6 +102,21 @@
 .pin.pinned {
   background: var(--metro-accent);
   opacity: 1;
+}
+
+.remove {
+  font-size: 13px;
+  padding: 6px 12px;
+  margin-right: 8px;
+  background: rgba(229, 20, 0, 0.18);
+  color: var(--metro-text);
+  opacity: 0;
+}
+.row:hover .remove {
+  opacity: 1;
+}
+.remove:hover {
+  background: rgba(229, 20, 0, 0.4);
 }
 
 .index {

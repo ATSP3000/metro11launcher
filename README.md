@@ -20,6 +20,8 @@ A faithful Windows 8 Metro Start Screen recreation for Windows 11, built with
   location, unpin)
 - Semantic zoom (ctrl+wheel / pinch) group overview
 - All Apps view with alphabetical sections and a letter jump index
+- Add your own apps: pick any `.exe`/`.lnk`/`.bat` via a file dialog ("Add app"
+  in All Apps); custom apps persist, survive rescans, and can be removed
 - Type-anywhere fuzzy search (fuse.js)
 - User panel (lock / sign out) and power menu (sleep / restart / shut down)
 - Settings: background & accent color, live-tile toggle, launch-at-startup,
