@@ -40,15 +40,16 @@ src/shared/ IPC contract shared between main and renderer
   launch the app. The window shows immediately in dev mode; press `Super+Z`
   (Win+Z) to toggle it.
 - Double-click **`build-portable.bat`** (recommended) to produce a runnable
-  `release\win-unpacked\Metro Launcher.exe`. This uses `electron-builder --dir`,
-  which never downloads the `winCodeSign` tool, so it cannot hit the
-  "cannot create symbolic link" error and needs no administrator rights.
-- Double-click **`build-installer.bat`** to produce an installable
-  `Metro Launcher Setup *.exe` in the `release` folder. electron-builder still
-  fetches `winCodeSign` (whose archive contains macOS symlinks); the script
-  works around the symlink-privilege error by extracting that archive itself
-  with the bundled 7-Zip while skipping the macOS files. The installer is
-  unsigned.
+  `release\Metro Launcher-win32-x64\Metro Launcher.exe`. This uses
+  `@electron/packager`, which copies Electron + the app into a folder and never
+  downloads electron-builder's `winCodeSign` tool — so it cannot hit the
+  "cannot create symbolic link" error and needs no administrator rights or
+  Developer Mode.
+- Double-click **`build-installer.bat`** only if you specifically want an NSIS
+  installer. electron-builder fetches `winCodeSign` (whose archive contains
+  macOS symlinks) for any Windows target; the script tries to work around the
+  symlink-privilege error, but if it still fails, prefer `build-portable.bat`
+  or enable Windows Developer Mode. Output is unsigned.
 
 ## Scripts
 

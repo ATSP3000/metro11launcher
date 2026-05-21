@@ -1,12 +1,12 @@
 @echo off
-REM Metro Launcher - build a portable app (no installer, no symlinks).
+REM Metro Launcher - build a portable Windows app (no installer, no symlinks).
 REM
-REM This uses electron-builder's "--dir" mode, which packages a ready-to-run
-REM app folder and never downloads the winCodeSign signing tool. That tool's
-REM archive is the only thing that contains symbolic links, so this build can
-REM never hit the "Cannot create symbolic link" error and needs no admin.
+REM Uses @electron/packager instead of electron-builder. The packager simply
+REM copies Electron + this app into a folder and NEVER downloads the
+REM "winCodeSign" tool, so it can never hit the "Cannot create symbolic link"
+REM error and needs no administrator rights or Developer Mode.
 REM
-REM Result: release\win-unpacked\Metro Launcher.exe  (just double-click it)
+REM Result:  release\Metro Launcher-win32-x64\Metro Launcher.exe  (double-click)
 
 cd /d "%~dp0"
 
@@ -20,20 +20,17 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "node_modules" (
-  echo Installing dependencies, this only happens once...
-  call npm install
-  if errorlevel 1 (
-    echo npm install failed. See the messages above.
-    pause
-    exit /b 1
-  )
+REM Always run install so the packager tool is present (it was added recently).
+echo Ensuring dependencies are installed...
+call npm install
+if errorlevel 1 (
+  echo npm install failed. See the messages above.
+  pause
+  exit /b 1
 )
 
-set CSC_IDENTITY_AUTO_DISCOVERY=false
-
 echo Building portable app...
-call npm run package:dir
+call npm run package:portable
 if errorlevel 1 (
   echo.
   echo Build failed. See the messages above.
@@ -42,5 +39,5 @@ if errorlevel 1 (
 )
 
 echo.
-echo Done. Run:  release\win-unpacked\Metro Launcher.exe
+echo Done. Run:  release\Metro Launcher-win32-x64\Metro Launcher.exe
 pause
