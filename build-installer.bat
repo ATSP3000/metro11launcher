@@ -1,19 +1,10 @@
 @echo off
 REM Metro Launcher - build a Windows installer (.exe).
 REM
-REM This self-elevates to Administrator. electron-builder downloads a
-REM code-signing tool (winCodeSign) whose archive contains symbolic links,
-REM and Windows only allows creating symlinks from an elevated process (or
-REM with Developer Mode enabled). Without that you get:
-REM   "Cannot create symbolic link : A required privilege is not held..."
-
-REM --- Self-elevate if we are not already running as administrator ---
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-  echo Requesting administrator privileges...
-  powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
-  exit /b
-)
+REM No administrator rights needed. We disable code-signing certificate
+REM auto-discovery, so electron-builder never downloads its "winCodeSign"
+REM tool. That download is the only thing that contained symbolic links and
+REM caused: "Cannot create symbolic link : A required privilege is not held".
 
 cd /d "%~dp0"
 
@@ -37,17 +28,17 @@ if not exist "node_modules" (
   )
 )
 
-REM We are not code-signing, so stop electron-builder from auto-discovering certs.
+REM Do not sign, and do not look for a certificate (this is what avoids the
+REM winCodeSign download and its symbolic links).
 set CSC_IDENTITY_AUTO_DISCOVERY=false
 
-REM Remove any partially-extracted signing tool left by a previous failed run
-REM so it re-extracts cleanly under the elevated process.
+REM Remove any partially-extracted signing tool from an earlier failed run.
 if exist "%LOCALAPPDATA%\electron-builder\Cache\winCodeSign" (
-  echo Clearing cached code-signing tool...
+  echo Clearing leftover code-signing cache...
   rmdir /s /q "%LOCALAPPDATA%\electron-builder\Cache\winCodeSign"
 )
 
-echo Building installer...
+echo Building installer (unsigned)...
 call npm run package
 if errorlevel 1 (
   echo.
