@@ -34,6 +34,14 @@ src/        React renderer: components, hooks, zustand stores, utils, styles
 src/shared/ IPC contract shared between main and renderer
 ```
 
+## Quick start (Windows)
+
+- Double-click **`start.bat`** to install dependencies (first run only) and
+  launch the app. The window shows immediately in dev mode; press `Super+Z`
+  (Win+Z) to toggle it.
+- Double-click **`build-installer.bat`** to produce an installable
+  `Metro Launcher Setup *.exe` in the `release` folder.
+
 ## Scripts
 
 ```bash
