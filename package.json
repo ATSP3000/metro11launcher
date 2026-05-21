@@ -12,7 +12,8 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "package": "npm run build && electron-builder --config electron-builder.config.json"
+    "package": "npm run build && electron-builder --config electron-builder.config.json",
+    "package:dir": "npm run build && electron-builder --dir --config electron-builder.config.json"
   },
   "dependencies": {
     "electron-store": "^8.2.0",
