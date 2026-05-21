@@ -1,0 +1,89 @@
+.root {
+  position: absolute;
+  inset: 0;
+  background: var(--metro-bg);
+  overflow: hidden;
+}
+
+.topBar {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--metro-text);
+  font-size: 20px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.iconButton:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.scroller {
+  position: absolute;
+  inset: 0;
+  padding: 96px 64px 80px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.canvas {
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+  min-width: min-content;
+}
+
+.canvas.entering {
+  animation: screenEnter var(--metro-enter-ms) var(--metro-ease) both;
+}
+.canvas.exiting {
+  animation: screenExit var(--metro-exit-ms) var(--metro-ease) both;
+}
+
+.bottomBar {
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+  z-index: 20;
+}
+
+.allAppsHint {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  color: var(--metro-text-dim);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.allAppsHint button {
+  color: var(--metro-text);
+  font-size: 22px;
+}
+
+@keyframes screenEnter {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes screenExit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-40px); }
+}

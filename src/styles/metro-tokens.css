@@ -1,0 +1,60 @@
+/* Authentic Windows 8 Metro design tokens. */
+:root {
+  /* Grid math: 1 unit = 80px, 8px gap. */
+  --metro-unit: 80px;
+  --metro-gap: 8px;
+  --metro-group-gap: 32px;
+
+  /* Derived tile pixel sizes (n units + (n-1) gaps). */
+  --tile-small: 80px; /* 1×1 */
+  --tile-medium: 168px; /* 2×2 */
+  --tile-wide-w: 344px; /* 4 wide */
+  --tile-wide-h: 168px; /* 2 tall */
+  --tile-large: 344px; /* 4×4 */
+
+  /* Cell pitch = unit + gap, used for grid placement math. */
+  --metro-cell: calc(var(--metro-unit) + var(--metro-gap));
+
+  /* Theme — overridden at runtime from saved config. */
+  --metro-bg: #1d1d1d;
+  --metro-accent: #0078d4;
+
+  /* Typography: Segoe UI per Metro spec. */
+  --metro-font: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --tile-label-size: 14px;
+  --group-label-size: 24px;
+
+  /* Chrome surfaces. */
+  --metro-overlay-bg: rgba(0, 0, 0, 0.85);
+  --metro-text: #ffffff;
+  --metro-text-dim: rgba(255, 255, 255, 0.6);
+
+  /* Motion. */
+  --metro-ease: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --metro-enter-ms: 200ms;
+  --metro-exit-ms: 150ms;
+}
+
+/* Authentic Windows 8 Metro accent palette. */
+:root {
+  --metro-lime: #6da400;
+  --metro-green: #008a00;
+  --metro-emerald: #008746;
+  --metro-teal: #00aba9;
+  --metro-cyan: #1ba1e2;
+  --metro-cobalt: #0050ef;
+  --metro-indigo: #6a00ff;
+  --metro-violet: #aa00ff;
+  --metro-pink: #f472d0;
+  --metro-magenta: #d80073;
+  --metro-crimson: #a20025;
+  --metro-red: #e51400;
+  --metro-orange: #fa6800;
+  --metro-amber: #f0a30a;
+  --metro-yellow: #e3c800;
+  --metro-brown: #825a2c;
+  --metro-olive: #6d8764;
+  --metro-steel: #647687;
+  --metro-mauve: #76608a;
+  --metro-taupe: #87794e;
+}

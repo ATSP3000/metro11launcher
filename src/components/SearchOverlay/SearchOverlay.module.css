@@ -1,0 +1,77 @@
+.root {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  background: var(--metro-overlay-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 64px;
+  animation: fade 150ms var(--metro-ease) both;
+}
+
+.input {
+  width: 480px;
+  max-width: 100%;
+  font-size: 32px;
+  font-weight: 300;
+  font-family: var(--metro-font);
+  color: var(--metro-text);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--metro-accent);
+  padding: 8px 4px;
+  outline: none;
+}
+
+.results {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--metro-gap);
+  align-content: flex-start;
+  overflow-y: auto;
+}
+
+.resultTile {
+  width: 168px;
+  height: 168px;
+  background: var(--metro-accent);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 0;
+}
+.resultTile.active {
+  outline: 3px solid #fff;
+  outline-offset: -3px;
+}
+.resultTile img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.resultLabel {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  right: 8px;
+  font-size: 14px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty {
+  margin-top: 40px;
+  color: var(--metro-text-dim);
+  font-size: 18px;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

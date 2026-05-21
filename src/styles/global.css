@@ -1,0 +1,52 @@
+@import './metro-tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--metro-font);
+  color: var(--metro-text);
+  background: var(--metro-bg);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+
+/* Disable the OS text-selection / drag-image affordances that break a launcher. */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Thin Metro-style scrollbar for overlay lists. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

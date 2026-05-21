@@ -1,0 +1,65 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.menu {
+  position: fixed;
+  z-index: 101;
+  min-width: 200px;
+  background: #2b2b2b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 14px;
+  color: var(--metro-text);
+}
+.item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.item:disabled {
+  color: var(--metro-text-dim);
+  cursor: default;
+}
+
+.separator {
+  height: 1px;
+  margin: 4px 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sectionLabel {
+  padding: 6px 16px 2px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--metro-text-dim);
+}
+
+.sizeRow {
+  display: flex;
+  gap: 4px;
+  padding: 4px 12px 8px;
+}
+.sizeButton {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 12px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--metro-text);
+}
+.sizeButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.sizeButton.active {
+  background: var(--metro-accent);
+}
