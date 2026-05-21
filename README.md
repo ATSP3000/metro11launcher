@@ -40,7 +40,10 @@ src/shared/ IPC contract shared between main and renderer
   launch the app. The window shows immediately in dev mode; press `Super+Z`
   (Win+Z) to toggle it.
 - Double-click **`build-installer.bat`** to produce an installable
-  `Metro Launcher Setup *.exe` in the `release` folder.
+  `Metro Launcher Setup *.exe` in the `release` folder. It self-elevates to
+  Administrator, which Windows requires so electron-builder can extract its
+  code-signing tool (the archive contains symbolic links). Enabling Developer
+  Mode is an alternative to running elevated.
 
 ## Scripts
 
