@@ -5,8 +5,8 @@ import { promises as fs } from 'fs';
 import { execFile } from 'child_process';
 import { IpcChannels } from '../src/shared/ipc';
 import type { LauncherConfig, PowerAction, UserInfo } from '../src/shared/ipc';
-import { loadConfig, saveConfig, clearIconCache } from './store';
-import { scan, addCustomApp, removeCustomApp } from './appScanner';
+import { loadConfig, saveConfig } from './store';
+import { listApps, addApp, removeApp } from './appRegistry';
 import { launchApp, openAppLocation } from './appLauncher';
 import { registerHotkey, unregisterAll } from './hotkeyManager';
 
@@ -76,12 +76,7 @@ function toggleLauncher(): void {
 // ── IPC ─────────────────────────────────────────────────────────────────────
 
 function registerIpc(): void {
-  ipcMain.handle(IpcChannels.getInstalledApps, () => scan());
-
-  ipcMain.handle(IpcChannels.rescanApps, () => {
-    clearIconCache();
-    return scan();
-  });
+  ipcMain.handle(IpcChannels.getApps, () => listApps());
 
   ipcMain.handle(IpcChannels.launchApp, async (_e, appId: string) => {
     const result = await launchApp(appId);
@@ -106,14 +101,14 @@ function registerIpc(): void {
         ? await dialog.showOpenDialog(mainWindow, options)
         : await dialog.showOpenDialog(options);
       if (result.canceled || result.filePaths.length === 0) return null;
-      return await addCustomApp(result.filePaths[0]);
+      return await addApp(result.filePaths[0]);
     } finally {
       dialogOpen = false;
     }
   });
 
   ipcMain.handle(IpcChannels.removeCustomApp, (_e, appId: string) => {
-    removeCustomApp(appId);
+    removeApp(appId);
   });
 
   ipcMain.handle(IpcChannels.loadConfig, () => loadConfig());

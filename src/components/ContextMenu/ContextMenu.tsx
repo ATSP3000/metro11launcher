@@ -25,7 +25,6 @@ export function ContextMenu() {
   if (!tile) return null;
 
   const app = getApp(tile.appId);
-  const isUwp = app?.source === 'uwp';
 
   // Keep the menu on-screen near the click point.
   const left = Math.min(menu.x, window.innerWidth - 220);
@@ -60,7 +59,7 @@ export function ContextMenu() {
         </button>
         <button
           className={styles.item}
-          disabled={!app || isUwp}
+          disabled={!app}
           onClick={act(() => app && void window.electronAPI.openAppLocation(app.id))}
         >
           Open file location

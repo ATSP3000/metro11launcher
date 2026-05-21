@@ -22,8 +22,7 @@ export type PowerAction = 'sleep' | 'restart' | 'shutdown' | 'lock' | 'signout';
 
 /** Channel names shared between main and preload. */
 export const IpcChannels = {
-  getInstalledApps: 'get-installed-apps',
-  rescanApps: 'rescan-apps',
+  getApps: 'get-apps',
   launchApp: 'launch-app',
   openAppLocation: 'open-app-location',
   addCustomApp: 'add-custom-app',
@@ -41,8 +40,7 @@ export const IpcChannels = {
 
 /** The API surface exposed to the renderer via the context bridge. */
 export interface ElectronAPI {
-  getInstalledApps(): Promise<InstalledApp[]>;
-  rescanApps(): Promise<InstalledApp[]>;
+  getApps(): Promise<InstalledApp[]>;
   launchApp(appId: string): Promise<{ ok: boolean; error?: string }>;
   openAppLocation(appId: string): Promise<{ ok: boolean; error?: string }>;
   /** Open a file picker to add a custom app; resolves null if cancelled. */

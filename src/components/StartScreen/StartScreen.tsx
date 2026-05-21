@@ -115,6 +115,13 @@ export function StartScreen() {
         </DndContext>
       )}
 
+      {tiles.length === 0 && !semanticZoom && (
+        <button className={styles.emptyState} onClick={() => setView('allApps')}>
+          <span className={styles.emptyTitle}>Your Start screen is empty</span>
+          <span className={styles.emptyHint}>Go to All apps to add and pin your apps</span>
+        </button>
+      )}
+
       <div className={styles.allAppsHint}>
         <button aria-label="All apps" onClick={() => setView('allApps')}>
           {'↓'}

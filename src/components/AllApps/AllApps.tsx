@@ -85,6 +85,12 @@ export function AllApps() {
 
       <div className={styles.body}>
         <div className={styles.list}>
+          {apps.length === 0 && (
+            <div className={styles.empty}>
+              No apps yet. Click <strong>+ Add app</strong> to pick an .exe or
+              shortcut and pin it to your Start screen.
+            </div>
+          )}
           {sections.map(([letter, group]) => (
             <div key={letter} id={`section-${letter}`} className={styles.section}>
               <div className={styles.sectionLetter}>{letter}</div>

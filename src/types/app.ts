@@ -1,19 +1,13 @@
-export type AppSource = 'start-menu' | 'registry' | 'uwp' | 'custom';
-
 export interface InstalledApp {
   /** Stable identifier derived from the launch target. */
   id: string;
   /** Display name shown to the user. */
   name: string;
-  /** Where this app was discovered. */
-  source: AppSource;
-  /**
-   * Launch target.
-   * - start-menu / registry: absolute path to an .exe or .lnk
-   * - uwp: the AppsFolder shell identifier (PackageFamilyName!AppId)
-   */
+  /** Always 'custom' — every app is user-added. */
+  source: 'custom';
+  /** Absolute path to an .exe / .lnk / .bat / .cmd. */
   target: string;
-  /** Optional explicit working directory for Win32 launches. */
+  /** Working directory for the launch. */
   cwd?: string;
   /** base64 PNG data URL of the extracted icon, when available. */
   icon?: string;

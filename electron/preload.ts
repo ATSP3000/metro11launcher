@@ -3,8 +3,7 @@ import { IpcChannels } from '../src/shared/ipc';
 import type { ElectronAPI } from '../src/shared/ipc';
 
 const api: ElectronAPI = {
-  getInstalledApps: () => ipcRenderer.invoke(IpcChannels.getInstalledApps),
-  rescanApps: () => ipcRenderer.invoke(IpcChannels.rescanApps),
+  getApps: () => ipcRenderer.invoke(IpcChannels.getApps),
   launchApp: (appId) => ipcRenderer.invoke(IpcChannels.launchApp, appId),
   openAppLocation: (appId) => ipcRenderer.invoke(IpcChannels.openAppLocation, appId),
   addCustomApp: () => ipcRenderer.invoke(IpcChannels.addCustomApp),

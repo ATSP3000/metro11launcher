@@ -4,15 +4,16 @@ A faithful Windows 8 Metro Start Screen recreation for Windows 11, built with
 **Electron + React + TypeScript + Vite**.
 
 > Target platform is Windows. The app builds and the Electron main process boots
-> cross-platform; on non-Windows systems the app scanner returns a placeholder
-> app set so the UI is still explorable during development.
+> cross-platform, so the UI is explorable during development on any OS.
 
 ## Features
 
 - Full-screen, frameless, always-on-top launcher window (hidden until toggled)
 - Global hotkey toggle (`Super+Z` by default, rebindable in Settings)
-- App discovery from Start Menu shortcuts, the registry Uninstall keys, and UWP
-  packages, with cached icon extraction
+- Add your own apps: pick any `.exe`/`.lnk`/`.bat`/`.cmd` via a file dialog
+  ("Add app" in All Apps, or in Settings). Apps you add get a tile pinned to
+  Start, persist across restarts, and can be removed. There is no auto-discovery
+  scanner — the launcher only shows apps you choose.
 - Metro tile grid: four tile sizes, authentic palette, sharp corners, flat
   colors, live-tile flip animation, horizontal scrolling groups
 - Drag-and-drop tile reorder with grid snapping (dnd-kit) and cross-group moves
@@ -20,18 +21,16 @@ A faithful Windows 8 Metro Start Screen recreation for Windows 11, built with
   location, unpin)
 - Semantic zoom (ctrl+wheel / pinch) group overview
 - All Apps view with alphabetical sections and a letter jump index
-- Add your own apps: pick any `.exe`/`.lnk`/`.bat` via a file dialog ("Add app"
-  in All Apps); custom apps persist, survive rescans, and can be removed
 - Type-anywhere fuzzy search (fuse.js)
 - User panel (lock / sign out) and power menu (sleep / restart / shut down)
 - Settings: background & accent color, live-tile toggle, launch-at-startup,
-  hotkey rebind, app rescan
+  hotkey rebind, add app
 - Layout and preferences persisted to disk via electron-store
 
 ## Project layout
 
 ```
-electron/   Main process: window, IPC, app scanner, launcher, hotkeys, store
+electron/   Main process: window, IPC, app registry, launcher, hotkeys, store
 src/        React renderer: components, hooks, zustand stores, utils, styles
 src/shared/ IPC contract shared between main and renderer
 ```
@@ -62,7 +61,5 @@ npm run package:portable  # build + package a runnable Windows app folder
 
 - `electron-store` is pinned to the v8 (CommonJS) line because Electron 31's
   bundled Node cannot `require()` the pure-ESM v10 line.
-- App launching prefers `shell.openPath`, falls back to `execFile`, and uses
-  `explorer.exe shell:AppsFolder\…` for UWP apps.
-- All `winreg` access is wrapped in try/catch since registry paths vary by
-  machine.
+- App launching prefers `shell.openPath` and falls back to `execFile`. Icons are
+  extracted with `app.getFileIcon` when you add an app and stored with it.

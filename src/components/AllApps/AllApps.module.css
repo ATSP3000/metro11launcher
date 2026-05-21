@@ -57,6 +57,18 @@
   padding: 0 48px 48px;
 }
 
+.empty {
+  margin-top: 48px;
+  max-width: 420px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--metro-text-dim);
+}
+.empty strong {
+  color: var(--metro-text);
+  font-weight: 600;
+}
+
 .section {
   margin-top: 24px;
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useUiStore } from '../../store/uiStore';
 import { useAppsStore } from '../../store/appsStore';
+import { useTilesStore } from '../../store/tilesStore';
 import { METRO_PALETTE } from '../../utils/tileColors';
 import styles from './Settings.module.css';
 
@@ -31,11 +32,16 @@ export function Settings() {
   const setHotkey = useUiStore((s) => s.setHotkey);
   const close = useUiStore((s) => s.toggleSettings);
 
-  const rescan = useAppsStore((s) => s.rescan);
-  const loading = useAppsStore((s) => s.loading);
+  const addCustom = useAppsStore((s) => s.addCustom);
+  const pinApp = useTilesStore((s) => s.pinApp);
 
   const [hotkeyDraft, setHotkeyDraft] = useState(hotkey);
   useEffect(() => setHotkeyDraft(hotkey), [hotkey]);
+
+  const handleAddApp = async () => {
+    const app = await addCustom();
+    if (app) pinApp(app.id);
+  };
 
   return (
     <div className={styles.root}>
@@ -108,9 +114,10 @@ export function Settings() {
 
       <div className={styles.section}>
         <div className={styles.sectionTitle}>Apps</div>
-        <button className={styles.button} disabled={loading} onClick={() => void rescan()}>
-          {loading ? 'Rescanning…' : 'Rescan installed apps'}
+        <button className={styles.button} onClick={() => void handleAddApp()}>
+          Add an app…
         </button>
+        <div className={styles.hint}>Pick an .exe/.lnk to pin it to Start.</div>
       </div>
     </div>
   );

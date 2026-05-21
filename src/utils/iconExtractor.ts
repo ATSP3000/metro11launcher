@@ -2,7 +2,7 @@ import type { InstalledApp } from '../types/app';
 
 /**
  * Renderer-side icon helper. Real extraction happens in the main process via
- * Electron's app.getFileIcon (see electron/appScanner.ts); this fills the gap
+ * Electron's app.getFileIcon (see electron/appRegistry.ts); this fills the gap
  * for apps with no extracted icon by drawing a Metro-style letter glyph.
  */
 export function iconForApp(app: Pick<InstalledApp, 'name' | 'icon'>): string {
