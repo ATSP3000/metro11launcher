@@ -13,7 +13,6 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "package": "npm run build && electron-builder --config electron-builder.config.json",
     "package:portable": "npm run build && electron-packager . --platform=win32 --arch=x64 --out=release --overwrite --ignore=\"^/release($|/)\" --ignore=\"^/src($|/)\""
   },
   "dependencies": {
@@ -33,7 +32,6 @@
     "@types/winreg": "^1.2.36",
     "@vitejs/plugin-react": "^4.3.1",
     "electron": "^31.0.0",
-    "electron-builder": "^24.13.3",
     "electron-vite": "^2.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

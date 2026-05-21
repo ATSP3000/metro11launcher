@@ -17,7 +17,7 @@ if errorlevel 1 (
 
 if not exist "node_modules" (
   echo Installing dependencies, this only happens once...
-  call npm install
+  call npm install --no-fund --no-audit --loglevel=error
   if errorlevel 1 (
     echo.
     echo npm install failed. See the messages above.

@@ -39,26 +39,21 @@ src/shared/ IPC contract shared between main and renderer
 - Double-click **`start.bat`** to install dependencies (first run only) and
   launch the app. The window shows immediately in dev mode; press `Super+Z`
   (Win+Z) to toggle it.
-- Double-click **`build-portable.bat`** (recommended) to produce a runnable
+- Double-click **`build-portable.bat`** to produce a runnable
   `release\Metro Launcher-win32-x64\Metro Launcher.exe`. This uses
-  `@electron/packager`, which copies Electron + the app into a folder and never
-  downloads electron-builder's `winCodeSign` tool — so it cannot hit the
-  "cannot create symbolic link" error and needs no administrator rights or
-  Developer Mode.
-- Double-click **`build-installer.bat`** only if you specifically want an NSIS
-  installer. electron-builder fetches `winCodeSign` (whose archive contains
-  macOS symlinks) for any Windows target; the script tries to work around the
-  symlink-privilege error, but if it still fails, prefer `build-portable.bat`
-  or enable Windows Developer Mode. Output is unsigned.
+  `@electron/packager`, which copies Electron + the app into a folder. It never
+  downloads a code-signing tool, so it cannot hit the "cannot create symbolic
+  link" error and needs no administrator rights or Developer Mode. Output is
+  unsigned.
 
 ## Scripts
 
 ```bash
-npm install        # install dependencies
-npm run dev        # start electron-vite dev (HMR)
-npm run build      # type-check-free production build to out/
-npm run typecheck  # tsc for both main and renderer projects
-npm run package    # build + electron-builder NSIS installer (Windows)
+npm install            # install dependencies
+npm run dev            # start electron-vite dev (HMR)
+npm run build          # production build to out/
+npm run typecheck      # tsc for both main and renderer projects
+npm run package:portable  # build + package a runnable Windows app folder
 ```
 
 ## Notes

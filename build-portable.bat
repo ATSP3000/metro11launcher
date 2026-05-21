@@ -21,10 +21,12 @@ if errorlevel 1 (
 )
 
 REM Always run install so the packager tool is present (it was added recently).
+REM --loglevel=error hides harmless deprecation warnings from deep dependencies.
 echo Ensuring dependencies are installed...
-call npm install
+call npm install --no-fund --no-audit --loglevel=error
 if errorlevel 1 (
-  echo npm install failed. See the messages above.
+  echo npm install failed. Re-run without the quiet flags to see details:
+  echo   npm install
   pause
   exit /b 1
 )
