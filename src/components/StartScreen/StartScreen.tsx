@@ -58,7 +58,7 @@ export function StartScreen() {
     enabled: navEnabled,
     onLaunch: (tileId) => void launchTile(tileId),
     onType: (char) => openSearch(char),
-    onEscape: () => window.electronAPI.hideLauncher()
+    onEscape: () => {}
   });
 
   const activeTile = tiles.find((t) => t.id === activeTileId) ?? null;

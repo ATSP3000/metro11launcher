@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, screen, nativeImage, dialog } from 'electron';
+import { app, BrowserWindow, ipcMain, nativeImage, dialog } from 'electron';
 import path from 'path';
 import os from 'os';
 import { promises as fs } from 'fs';
@@ -10,29 +10,19 @@ import { listApps, addApp, removeApp } from './appRegistry';
 import { launchApp, openAppLocation } from './appLauncher';
 import { registerHotkey, unregisterAll } from './hotkeyManager';
 
-const isDev = !!process.env['ELECTRON_RENDERER_URL'];
-
 let mainWindow: BrowserWindow | null = null;
 
-// Suppresses the blur-to-hide behaviour while a native dialog (e.g. the file
-// picker) is open, so choosing a file doesn't dismiss the launcher.
-let dialogOpen = false;
-
 function createWindow(): void {
-  const { bounds } = screen.getPrimaryDisplay();
-
   mainWindow = new BrowserWindow({
-    x: bounds.x,
-    y: bounds.y,
-    width: bounds.width,
-    height: bounds.height,
+    width: 1280,
+    height: 800,
+    minWidth: 800,
+    minHeight: 600,
     show: false,
-    frame: false,
-    transparent: false,
-    skipTaskbar: true,
+    center: true,
     backgroundColor: '#1a1a2e',
-    fullscreen: true,
     autoHideMenuBar: true,
+    title: 'Metro Launcher',
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -41,21 +31,15 @@ function createWindow(): void {
     }
   });
 
-  mainWindow.on('show', () => {
-    mainWindow?.setAlwaysOnTop(true, 'screen-saver');
-    mainWindow?.focus();
-    mainWindow?.webContents.send(IpcChannels.onVisibilityChange, true);
-  });
+  mainWindow.once('ready-to-show', () => mainWindow?.show());
 
-  mainWindow.on('hide', () => {
-    mainWindow?.setAlwaysOnTop(false);
-    mainWindow?.webContents.send(IpcChannels.onVisibilityChange, false);
-  });
+  const sendVisible = (visible: boolean) =>
+    mainWindow?.webContents.send(IpcChannels.onVisibilityChange, visible);
 
-  // Hide instead of closing when focus is lost (acts like the Start screen).
-  mainWindow.on('blur', () => {
-    if (!isDev && !dialogOpen) mainWindow?.hide();
-  });
+  mainWindow.on('show', () => sendVisible(true));
+  mainWindow.on('restore', () => sendVisible(true));
+  mainWindow.on('hide', () => sendVisible(false));
+  mainWindow.on('minimize', () => sendVisible(false));
 
   if (process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
@@ -66,10 +50,11 @@ function createWindow(): void {
 
 function toggleLauncher(): void {
   if (!mainWindow) return;
-  if (mainWindow.isVisible()) {
-    mainWindow.hide();
-  } else {
+  if (mainWindow.isMinimized() || !mainWindow.isVisible()) {
     mainWindow.show();
+    mainWindow.focus();
+  } else {
+    mainWindow.minimize();
   }
 }
 
@@ -78,33 +63,25 @@ function toggleLauncher(): void {
 function registerIpc(): void {
   ipcMain.handle(IpcChannels.getApps, () => listApps());
 
-  ipcMain.handle(IpcChannels.launchApp, async (_e, appId: string) => {
-    const result = await launchApp(appId);
-    if (result.ok && !isDev) mainWindow?.hide();
-    return result;
-  });
+  // Launch the app and leave the launcher window open.
+  ipcMain.handle(IpcChannels.launchApp, (_e, appId: string) => launchApp(appId));
 
   ipcMain.handle(IpcChannels.openAppLocation, (_e, appId: string) => openAppLocation(appId));
 
   ipcMain.handle(IpcChannels.addCustomApp, async () => {
-    dialogOpen = true;
-    try {
-      const options: Electron.OpenDialogOptions = {
-        title: 'Add an app',
-        properties: ['openFile'],
-        filters: [
-          { name: 'Programs', extensions: ['exe', 'lnk', 'bat', 'cmd'] },
-          { name: 'All files', extensions: ['*'] }
-        ]
-      };
-      const result = mainWindow
-        ? await dialog.showOpenDialog(mainWindow, options)
-        : await dialog.showOpenDialog(options);
-      if (result.canceled || result.filePaths.length === 0) return null;
-      return await addApp(result.filePaths[0]);
-    } finally {
-      dialogOpen = false;
-    }
+    const options: Electron.OpenDialogOptions = {
+      title: 'Add an app',
+      properties: ['openFile'],
+      filters: [
+        { name: 'Programs', extensions: ['exe', 'lnk', 'bat', 'cmd'] },
+        { name: 'All files', extensions: ['*'] }
+      ]
+    };
+    const result = mainWindow
+      ? await dialog.showOpenDialog(mainWindow, options)
+      : await dialog.showOpenDialog(options);
+    if (result.canceled || result.filePaths.length === 0) return null;
+    return await addApp(result.filePaths[0]);
   });
 
   ipcMain.handle(IpcChannels.removeCustomApp, (_e, appId: string) => {
@@ -135,9 +112,6 @@ function registerIpc(): void {
     }
     return result;
   });
-
-  ipcMain.on(IpcChannels.hideLauncher, () => mainWindow?.hide());
-  ipcMain.on(IpcChannels.toggleLauncher, () => toggleLauncher());
 }
 
 async function getUserInfo(): Promise<UserInfo> {
@@ -203,9 +177,6 @@ if (!gotLock) {
     const result = registerHotkey(config.hotkey, toggleLauncher);
     if (!result.ok) console.warn('[hotkey]', result.error);
 
-    // Show immediately in development for fast iteration.
-    if (isDev) mainWindow?.show();
-
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
@@ -213,7 +184,7 @@ if (!gotLock) {
 
   app.on('will-quit', () => unregisterAll());
 
-  // Keep running in the background when all windows are hidden/closed.
+  // Closing the window exits the app (standard desktop behaviour).
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
   });

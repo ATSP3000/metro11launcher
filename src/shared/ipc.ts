@@ -32,8 +32,6 @@ export const IpcChannels = {
   powerAction: 'power-action',
   setLaunchAtStartup: 'set-launch-at-startup',
   setHotkey: 'set-hotkey',
-  hideLauncher: 'hide-launcher',
-  toggleLauncher: 'toggle-launcher',
   onVisibilityChange: 'visibility-change'
 } as const;
 
@@ -51,6 +49,5 @@ export interface ElectronAPI {
   powerAction(action: PowerAction): Promise<{ ok: boolean; error?: string }>;
   setLaunchAtStartup(enabled: boolean): Promise<void>;
   setHotkey(accelerator: string): Promise<{ ok: boolean; error?: string }>;
-  hideLauncher(): void;
   onVisibilityChange(callback: (visible: boolean) => void): () => void;
 }

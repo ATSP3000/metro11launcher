@@ -14,7 +14,6 @@ const api: ElectronAPI = {
   powerAction: (action) => ipcRenderer.invoke(IpcChannels.powerAction, action),
   setLaunchAtStartup: (enabled) => ipcRenderer.invoke(IpcChannels.setLaunchAtStartup, enabled),
   setHotkey: (accelerator) => ipcRenderer.invoke(IpcChannels.setHotkey, accelerator),
-  hideLauncher: () => ipcRenderer.send(IpcChannels.hideLauncher),
   onVisibilityChange: (callback) => {
     const listener = (_e: Electron.IpcRendererEvent, visible: boolean) => callback(visible);
     ipcRenderer.on(IpcChannels.onVisibilityChange, listener);

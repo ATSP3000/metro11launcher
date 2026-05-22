@@ -8,8 +8,11 @@ A faithful Windows 8 Metro Start Screen recreation for Windows 11, built with
 
 ## Features
 
-- Full-screen, frameless, always-on-top launcher window (hidden until toggled)
-- Global hotkey toggle (`Super+Z` by default, rebindable in Settings)
+- Normal resizable desktop window with the standard title bar (minimize /
+  maximize / close) and a taskbar entry
+- Global hotkey (`Super+Z` by default, rebindable in Settings) to summon or
+  minimize the window
+- Launching an app leaves the launcher open
 - Add your own apps: pick any `.exe`/`.lnk`/`.bat`/`.cmd` via a file dialog
   ("Add app" in All Apps, or in Settings). Apps you add get a tile pinned to
   Start, persist across restarts, and can be removed. There is no auto-discovery
