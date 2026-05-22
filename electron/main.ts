@@ -33,6 +33,10 @@ function createWindow(): void {
 
   mainWindow.once('ready-to-show', () => mainWindow?.show());
 
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+
   const sendVisible = (visible: boolean) =>
     mainWindow?.webContents.send(IpcChannels.onVisibilityChange, visible);
 
@@ -162,14 +166,24 @@ function runPowerAction(action: PowerAction): Promise<{ ok: boolean; error?: str
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
-// Single-instance: a second launch just toggles the existing window.
+function focusWindow(): void {
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+// Single-instance: relaunching brings the existing window to the front.
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
 } else {
-  app.on('second-instance', () => toggleLauncher());
+  app.on('second-instance', () => focusWindow());
 
   app.whenReady().then(() => {
+    // Identifies the app to Windows so the taskbar groups it correctly.
+    if (process.platform === 'win32') app.setAppUserModelId('com.metrolauncher.app');
+
     registerIpc();
     createWindow();
 
