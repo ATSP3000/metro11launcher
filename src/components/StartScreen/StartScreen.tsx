@@ -23,7 +23,6 @@ export function StartScreen() {
 
   const visible = useUiStore((s) => s.visible);
   const semanticZoom = useUiStore((s) => s.semanticZoom);
-  const liveTilesEnabled = useUiStore((s) => s.liveTilesEnabled);
   const view = useUiStore((s) => s.view);
   const searchOpen = useUiStore((s) => s.searchOpen);
   const settingsOpen = useUiStore((s) => s.settingsOpen);
@@ -98,7 +97,6 @@ export function StartScreen() {
                     .filter((t) => t.groupId === group.id)
                     .sort((a, b) => a.position.row - b.position.row || a.position.col - b.position.col)}
                   getApp={getApp}
-                  liveTilesEnabled={liveTilesEnabled}
                   focusedTileId={focusedTileId}
                   onLaunch={(tileId) => void launchTile(tileId)}
                   onContextMenu={(tileId, x, y) => openContextMenu({ tileId, x, y })}

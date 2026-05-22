@@ -7,7 +7,6 @@ export interface LauncherConfig {
   tiles: Tile[];
   accentColor: string;
   backgroundColor: string;
-  liveTilesEnabled: boolean;
   launchAtStartup: boolean;
   hotkey: string;
   lastUpdated: number;

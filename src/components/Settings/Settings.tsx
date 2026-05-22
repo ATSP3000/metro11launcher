@@ -21,13 +21,11 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
 export function Settings() {
   const accentColor = useUiStore((s) => s.accentColor);
   const backgroundColor = useUiStore((s) => s.backgroundColor);
-  const liveTilesEnabled = useUiStore((s) => s.liveTilesEnabled);
   const launchAtStartup = useUiStore((s) => s.launchAtStartup);
   const hotkey = useUiStore((s) => s.hotkey);
 
   const setAccentColor = useUiStore((s) => s.setAccentColor);
   const setBackgroundColor = useUiStore((s) => s.setBackgroundColor);
-  const setLiveTilesEnabled = useUiStore((s) => s.setLiveTilesEnabled);
   const setLaunchAtStartup = useUiStore((s) => s.setLaunchAtStartup);
   const setHotkey = useUiStore((s) => s.setHotkey);
   const close = useUiStore((s) => s.toggleSettings);
@@ -78,14 +76,6 @@ export function Settings() {
               onClick={() => setAccentColor(c.hex)}
             />
           ))}
-        </div>
-      </div>
-
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>Tiles</div>
-        <div className={styles.row}>
-          <span>Animate live tiles</span>
-          <Toggle on={liveTilesEnabled} onChange={setLiveTilesEnabled} />
         </div>
       </div>
 

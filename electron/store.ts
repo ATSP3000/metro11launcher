@@ -14,7 +14,6 @@ const defaults: LauncherConfig = {
   tiles: [],
   accentColor: '#0078d4',
   backgroundColor: '#1d1d1d',
-  liveTilesEnabled: true,
   launchAtStartup: false,
   hotkey: 'Super+Z',
   lastUpdated: 0
@@ -26,7 +25,18 @@ const configStore = new Store<{ config: LauncherConfig }>({
 });
 
 export function loadConfig(): LauncherConfig {
-  return configStore.get('config');
+  const config = configStore.get('config');
+  // Drop any tile whose app no longer exists (e.g. legacy seeded defaults from
+  // before the auto-discovery scanner was removed). Keeps the layout honest:
+  // a tile only exists if you can actually launch it.
+  const appIds = new Set(getApps().map((a) => a.id));
+  const tiles = config.tiles.filter((t) => appIds.has(t.appId));
+  if (tiles.length !== config.tiles.length) {
+    const cleaned = { ...config, tiles };
+    configStore.set('config', cleaned);
+    return cleaned;
+  }
+  return config;
 }
 
 export function saveConfig(config: LauncherConfig): void {

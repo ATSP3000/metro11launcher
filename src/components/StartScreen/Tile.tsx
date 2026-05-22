@@ -11,20 +11,19 @@ const LONG_PRESS_MS = 450;
 interface TileProps {
   tile: TileModel;
   app?: InstalledApp;
-  live: boolean;
   focused: boolean;
   onLaunch: () => void;
   onContextMenu: (x: number, y: number) => void;
 }
 
-export function Tile({ tile, app, live, focused, onLaunch, onContextMenu }: TileProps) {
+export function Tile({ tile, app, focused, onLaunch, onContextMenu }: TileProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: tile.id });
   const longPress = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { left, top } = positionPx(tile.position);
   const { width, height } = sizePx(tile.size);
-  const name = tile.label ?? app?.name ?? 'app';
-  const icon = iconForApp({ name, icon: app?.icon });
+  const name = tile.label ?? app?.name ?? '';
+  const icon = iconForApp({ name: name || '?', icon: app?.icon });
 
   const dragOffset = transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined;
 
@@ -45,13 +44,7 @@ export function Tile({ tile, app, live, focused, onLaunch, onContextMenu }: Tile
     <button
       ref={setNodeRef}
       type="button"
-      className={[
-        styles.tile,
-        styles[tile.size],
-        isDragging ? styles.dragging : '',
-        focused ? styles.focused : '',
-        live ? styles.live : ''
-      ]
+      className={[styles.tile, styles[tile.size], isDragging ? styles.dragging : '', focused ? styles.focused : '']
         .filter(Boolean)
         .join(' ')}
       style={{
@@ -62,7 +55,7 @@ export function Tile({ tile, app, live, focused, onLaunch, onContextMenu }: Tile
         background: tile.color,
         transform: dragOffset
       }}
-      aria-label={name}
+      aria-label={name || 'App'}
       onClick={() => !isDragging && onLaunch()}
       onContextMenu={(e) => {
         e.preventDefault();
@@ -75,16 +68,8 @@ export function Tile({ tile, app, live, focused, onLaunch, onContextMenu }: Tile
       {...attributes}
       {...listeners}
     >
-      <span className={styles.flip}>
-        <span className={styles.face}>
-          <img className={styles.icon} src={icon} alt="" draggable={false} />
-        </span>
-        {live && (
-          <span className={`${styles.face} ${styles.back}`}>
-            <span className={styles.liveTitle}>{name}</span>
-            <span className={styles.liveBig}>{liveSnippet(name)}</span>
-          </span>
-        )}
+      <span className={styles.face}>
+        <img className={styles.icon} src={icon} alt="" draggable={false} />
       </span>
       <span className={styles.label}>{name}</span>
     </button>
@@ -94,8 +79,8 @@ export function Tile({ tile, app, live, focused, onLaunch, onContextMenu }: Tile
 /** Static visual used inside the dnd-kit DragOverlay (no draggable registration). */
 export function TileGhost({ tile, app }: { tile: TileModel; app?: InstalledApp }) {
   const { width, height } = sizePx(tile.size);
-  const name = tile.label ?? app?.name ?? 'app';
-  const icon = iconForApp({ name, icon: app?.icon });
+  const name = tile.label ?? app?.name ?? '';
+  const icon = iconForApp({ name: name || '?', icon: app?.icon });
   return (
     <div
       className={`${styles.tile} ${styles[tile.size]} ${styles.dragging}`}
@@ -107,11 +92,4 @@ export function TileGhost({ tile, app }: { tile: TileModel; app?: InstalledApp }
       <span className={styles.label}>{name}</span>
     </div>
   );
-}
-
-/** Deterministic mock "live" value so back faces feel alive without real data. */
-function liveSnippet(name: string): string {
-  const seed = [...name].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const samples = ['3 new', '72°', 'Today', '12 unread', '5 events', '↑ 4%'];
-  return samples[seed % samples.length];
 }

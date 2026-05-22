@@ -10,7 +10,6 @@ interface TileGroupProps {
   group: TileGroupModel;
   tiles: TileModel[];
   getApp: (appId: string) => InstalledApp | undefined;
-  liveTilesEnabled: boolean;
   focusedTileId: string | null;
   onLaunch: (tileId: string) => void;
   onContextMenu: (tileId: string, x: number, y: number) => void;
@@ -20,7 +19,6 @@ export function TileGroup({
   group,
   tiles,
   getApp,
-  liveTilesEnabled,
   focusedTileId,
   onLaunch,
   onContextMenu
@@ -45,7 +43,6 @@ export function TileGroup({
             key={tile.id}
             tile={tile}
             app={getApp(tile.appId)}
-            live={liveTilesEnabled && tile.liveEnabled}
             focused={focusedTileId === tile.id}
             onLaunch={() => onLaunch(tile.id)}
             onContextMenu={(x, y) => onContextMenu(tile.id, x, y)}

@@ -26,7 +26,6 @@ interface UiState {
   // Theme / settings (persisted)
   accentColor: string;
   backgroundColor: string;
-  liveTilesEnabled: boolean;
   launchAtStartup: boolean;
   hotkey: string;
 
@@ -47,13 +46,11 @@ interface UiState {
   hydrateTheme: (theme: {
     accentColor: string;
     backgroundColor: string;
-    liveTilesEnabled: boolean;
     launchAtStartup: boolean;
     hotkey: string;
   }) => void;
   setAccentColor: (hex: string) => void;
   setBackgroundColor: (hex: string) => void;
-  setLiveTilesEnabled: (on: boolean) => void;
   setLaunchAtStartup: (on: boolean) => void;
   setHotkey: (accelerator: string) => void;
 }
@@ -72,7 +69,6 @@ export const useUiStore = create<UiState>((set) => ({
 
   accentColor: '#0078d4',
   backgroundColor: '#1d1d1d',
-  liveTilesEnabled: true,
   launchAtStartup: false,
   hotkey: 'Super+Z',
 
@@ -113,10 +109,6 @@ export const useUiStore = create<UiState>((set) => ({
   },
   setBackgroundColor: (backgroundColor) => {
     set({ backgroundColor });
-    schedulePersist();
-  },
-  setLiveTilesEnabled: (liveTilesEnabled) => {
-    set({ liveTilesEnabled });
     schedulePersist();
   },
   setLaunchAtStartup: (launchAtStartup) => {

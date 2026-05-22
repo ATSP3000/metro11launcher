@@ -18,7 +18,6 @@ export interface Tile {
   groupId: string;
   position: TilePosition;
   label?: string; // Override app name on tile
-  liveEnabled: boolean; // Whether tile shows live data
 }
 
 export interface TileGroup {

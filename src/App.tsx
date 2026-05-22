@@ -31,7 +31,6 @@ export function App() {
       hydrateTheme({
         accentColor: config.accentColor,
         backgroundColor: config.backgroundColor,
-        liveTilesEnabled: config.liveTilesEnabled,
         launchAtStartup: config.launchAtStartup,
         hotkey: config.hotkey
       });

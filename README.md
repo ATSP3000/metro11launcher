@@ -15,16 +15,14 @@ A faithful Windows 8 Metro Start Screen recreation for Windows 11, built with
   Start, persist across restarts, and can be removed. There is no auto-discovery
   scanner — the launcher only shows apps you choose.
 - Metro tile grid: four tile sizes, authentic palette, sharp corners, flat
-  colors, live-tile flip animation, horizontal scrolling groups
+  colors, horizontal scrolling groups
 - Drag-and-drop tile reorder with grid snapping (dnd-kit) and cross-group moves
-- Long-press / right-click tile context menu (resize, live toggle, open
-  location, unpin)
+- Long-press / right-click tile context menu (resize, open location, unpin)
 - Semantic zoom (ctrl+wheel / pinch) group overview
 - All Apps view with alphabetical sections and a letter jump index
 - Type-anywhere fuzzy search (fuse.js)
 - User panel (lock / sign out) and power menu (sleep / restart / shut down)
-- Settings: background & accent color, live-tile toggle, launch-at-startup,
-  hotkey rebind, add app
+- Settings: background & accent color, launch-at-startup, hotkey rebind, add app
 - Layout and preferences persisted to disk via electron-store
 
 ## Project layout

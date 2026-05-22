@@ -10,7 +10,6 @@ export function buildConfig(): LauncherConfig {
     tiles: tiles.tiles,
     accentColor: ui.accentColor,
     backgroundColor: ui.backgroundColor,
-    liveTilesEnabled: ui.liveTilesEnabled,
     launchAtStartup: ui.launchAtStartup,
     hotkey: ui.hotkey,
     lastUpdated: Date.now()

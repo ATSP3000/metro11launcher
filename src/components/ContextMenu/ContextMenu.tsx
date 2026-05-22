@@ -17,7 +17,6 @@ export function ContextMenu() {
   const tiles = useTilesStore((s) => s.tiles);
   const resizeTile = useTilesStore((s) => s.resizeTile);
   const removeTile = useTilesStore((s) => s.removeTile);
-  const toggleLive = useTilesStore((s) => s.toggleLive);
   const getApp = useAppsStore((s) => s.getApp);
 
   if (!menu) return null;
@@ -54,9 +53,6 @@ export function ContextMenu() {
 
         <div className={styles.separator} />
 
-        <button className={styles.item} onClick={act(() => toggleLive(tile.id))}>
-          {tile.liveEnabled ? 'Turn live tile off' : 'Turn live tile on'}
-        </button>
         <button
           className={styles.item}
           disabled={!app}

@@ -18,7 +18,6 @@ interface TilesState {
   pinApp: (appId: string, groupId?: string) => void;
   unpinApp: (appId: string) => void;
   setTileColor: (tileId: string, color: string) => void;
-  toggleLive: (tileId: string) => void;
 
   addGroup: (label: string) => string;
   renameGroup: (groupId: string, label: string) => void;
@@ -101,8 +100,7 @@ export const useTilesStore = create<TilesState>((set, get) => ({
       size: 'medium',
       color: colorForKey(appId),
       groupId: targetGroup,
-      position,
-      liveEnabled: false
+      position
     };
     commit(set, [...state.tiles, tile]);
   },
@@ -113,13 +111,6 @@ export const useTilesStore = create<TilesState>((set, get) => ({
 
   setTileColor: (tileId, color) => {
     commit(set, get().tiles.map((t) => (t.id === tileId ? { ...t, color } : t)));
-  },
-
-  toggleLive: (tileId) => {
-    commit(
-      set,
-      get().tiles.map((t) => (t.id === tileId ? { ...t, liveEnabled: !t.liveEnabled } : t))
-    );
   },
 
   addGroup: (label) => {
